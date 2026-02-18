@@ -1,0 +1,40 @@
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+.local/
+
+# Runtime data
+*.db
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
+*.key
+*.env
+*.env.*
+.backup_ts
+
+# Binaries / build artifacts
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.out
+dist/
+release/
+
+# Frontend artifacts
+frontend/node_modules/
+frontend/dist/
+
+# Backups / exports
+backups/
+backgrounds/
+*.zip
+*.tar.gz
+licenses.csv
+licenses.html
+licenses.xls
+license-server-backup.json

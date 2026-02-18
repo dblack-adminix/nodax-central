@@ -1,0 +1,59 @@
+{
+  "annotations": {"list": []},
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "links": [],
+  "panels": [
+    {
+      "id": 1,
+      "type": "table",
+      "title": "NODAX Logs (Infinity JSON)",
+      "gridPos": {"h": 18, "w": 24, "x": 0, "y": 0},
+      "targets": [
+        {
+          "refId": "A",
+          "source": "url",
+          "type": "json",
+          "url": "${central_url}/api/grafana/logs?limit=500",
+          "format": "table",
+          "root_selector": "items"
+        }
+      ],
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "renameByName": {
+              "agentId": "agent_id",
+              "agentName": "agent_name",
+              "targetVm": "target_vm",
+              "unixMs": "unix_ms"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "refresh": "15s",
+  "schemaVersion": 39,
+  "style": "dark",
+  "tags": ["nodax", "central", "logs", "infinity"],
+  "templating": {
+    "list": [
+      {
+        "name": "central_url",
+        "type": "textbox",
+        "label": "Central URL",
+        "query": "http://localhost:8080",
+        "current": {"text": "http://localhost:8080", "value": "http://localhost:8080"}
+      }
+    ]
+  },
+  "time": {"from": "now-6h", "to": "now"},
+  "timepicker": {},
+  "timezone": "",
+  "title": "NODAX Central Logs (Infinity)",
+  "version": 1,
+  "weekStart": ""
+}

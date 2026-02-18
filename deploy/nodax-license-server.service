@@ -1,0 +1,15 @@
+[Unit]
+Description=NODAX License Server
+After=network.target
+
+[Service]
+Type=simple
+User=nodax-license
+WorkingDirectory=/var/lib/nodax-license-server
+EnvironmentFile=/etc/nodax-license-server/license-server.env
+ExecStart=/opt/nodax-license-server/bin/license-server
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target

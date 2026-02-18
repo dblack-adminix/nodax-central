@@ -1,0 +1,15 @@
+[Unit]
+Description=NODAX Central
+After=network.target
+
+[Service]
+Type=simple
+User=nodax
+WorkingDirectory=/var/lib/nodax-central
+EnvironmentFile=/etc/nodax-central/nodax-central.env
+ExecStart=/opt/nodax-central/bin/nodax-central
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target

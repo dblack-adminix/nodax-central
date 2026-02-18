@@ -1,0 +1,10 @@
+# Replace license.example.com with your domain.
+license.example.com {
+    encode gzip zstd
+
+    reverse_proxy 127.0.0.1:8091 {
+        header_up X-Forwarded-Proto {scheme}
+        header_up X-Forwarded-For {remote_host}
+        header_up X-Forwarded-Host {host}
+    }
+}
