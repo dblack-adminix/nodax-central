@@ -78,24 +78,30 @@ curl -I http://127.0.0.1:8080/
 
 Используем Caddy как основной reverse proxy для Linux.
 
-1) Установите Caddy (Ubuntu/Debian):
+### 7.1 Автоматически через deploy-linux.sh (рекомендуется)
+
+```bash
+sudo SETUP_CADDY=1 CADDY_DOMAIN=central.example.com BIN_SOURCE=./nodax-central ./deploy/deploy-linux.sh
+```
+
+Что делает автоматизация:
+- устанавливает `caddy` (apt/dnf/yum, если отсутствует)
+- генерирует `/etc/caddy/Caddyfile` из `deploy/Caddyfile.linux`
+- подставляет ваш домен и локальный порт Central
+- валидирует конфиг и перезапускает `caddy`
+
+Также можно через единый entrypoint:
+
+```bash
+sudo pwsh -File ./deploy/install-central.ps1 -BinarySource ./nodax-central -SetupCaddy -CaddyDomain central.example.com
+```
+
+### 7.2 Ручная настройка (если нужно)
 
 ```bash
 sudo apt update
 sudo apt install -y caddy
-```
-
-2) Скопируйте шаблон конфига и укажите ваш домен:
-
-```bash
-sudo cp ./Caddyfile.linux /etc/caddy/Caddyfile
-```
-
-Файл-шаблон находится в пакете: `deploy/Caddyfile.linux`.
-
-3) Проверьте и перезапустите Caddy:
-
-```bash
+sudo cp ./deploy/Caddyfile.linux /etc/caddy/Caddyfile
 sudo caddy validate --config /etc/caddy/Caddyfile
 sudo systemctl restart caddy
 sudo systemctl status caddy --no-pager

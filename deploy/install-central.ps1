@@ -75,6 +75,15 @@ if ($isLinuxHost) {
 
     Write-Host "Detected Linux. Running deploy-linux.sh" -ForegroundColor Cyan
 
+    if ($PSBoundParameters.ContainsKey('ServiceName')) { $env:APP_NAME = $ServiceName }
+    if ($PSBoundParameters.ContainsKey('InstallDir')) { $env:INSTALL_DIR = $InstallDir }
+    if ($PSBoundParameters.ContainsKey('DataDir')) { $env:DATA_DIR = $DataDir }
+    if ($PSBoundParameters.ContainsKey('Port')) { $env:PORT = [string]$Port }
+    if ($PSBoundParameters.ContainsKey('BinarySource')) { $env:BIN_SOURCE = $BinarySource }
+    if ($PSBoundParameters.ContainsKey('CaddyConfigDir')) { $env:CADDY_CONFIG_DIR = $CaddyConfigDir }
+    if ($PSBoundParameters.ContainsKey('CaddyDomain')) { $env:CADDY_DOMAIN = $CaddyDomain }
+    if ($PSBoundParameters.ContainsKey('SetupCaddy') -and $SetupCaddy) { $env:SETUP_CADDY = "1" }
+
     if (Get-Command bash -ErrorAction SilentlyContinue) {
         & bash $target @cleanArgs
     } else {
