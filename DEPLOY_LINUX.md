@@ -59,11 +59,15 @@ chmod +x ./deploy/deploy-linux.sh
 sudo BIN_SOURCE=./nodax-central ./deploy/deploy-linux.sh
 ```
 
-Если на сервере старый Go и не хотите обновлять компилятор, используйте готовый бинарник из репозитория:
+Если в системе старый `golang-go` из apt (например 1.19), установите актуальный Go из официального архива:
 
 ```bash
-chmod +x ./release/nodax-central-linux-install/nodax-central
-sudo BIN_SOURCE=./release/nodax-central-linux-install/nodax-central ./deploy/deploy-linux.sh
+cd /tmp
+curl -fsSLO https://go.dev/dl/go1.26.0.linux-amd64.tar.gz
+sudo rm -rf /usr/local/go
+sudo tar -C /usr/local -xzf go1.26.0.linux-amd64.tar.gz
+export PATH=/usr/local/go/bin:$PATH
+go version
 ```
 
 ## 5. Проверка
