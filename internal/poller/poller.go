@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"nodax-central/internal/netutil"
 	"nodax-central/internal/models"
 	"nodax-central/internal/store"
 	"sync"
@@ -271,7 +272,8 @@ func (p *Poller) pollAll() {
 
 // fetchJSON makes an authenticated GET request to an agent endpoint
 func (p *Poller) fetchJSON(agent models.Agent, path string, result interface{}) error {
-	url := agent.URL + path
+	base := netutil.NormalizeAgentBaseURL(agent.URL)
+	url := base + path
 
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {

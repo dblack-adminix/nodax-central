@@ -8,6 +8,7 @@ import (
 	"io"
 	"net/http"
 	"nodax-central/internal/models"
+	"nodax-central/internal/netutil"
 	"nodax-central/internal/poller"
 	"nodax-central/internal/store"
 	"os"
@@ -142,7 +143,7 @@ func (h *Handler) handleConfigRestore(w http.ResponseWriter, r *http.Request) {
 			if strings.TrimSpace(a.ID) == "" {
 				a.ID = fmt.Sprintf("agent_%d", time.Now().UnixNano()+int64(i))
 			}
-			a.URL = strings.TrimRight(strings.TrimSpace(a.URL), "/")
+			a.URL = netutil.NormalizeAgentBaseURL(a.URL)
 			if a.URL == "" {
 				continue
 			}
@@ -384,7 +385,7 @@ func (h *Handler) handleAgents(w http.ResponseWriter, r *http.Request) {
 			httpErr(w, fmt.Errorf("url is required"), 400)
 			return
 		}
-		agent.URL = strings.TrimRight(agent.URL, "/")
+		agent.URL = netutil.NormalizeAgentBaseURL(agent.URL)
 		if agent.ID == "" {
 			agent.ID = fmt.Sprintf("agent_%d", time.Now().UnixNano())
 		}
@@ -478,7 +479,7 @@ func (h *Handler) handleAgent(w http.ResponseWriter, r *http.Request) {
 			existing.Name = update.Name
 		}
 		if update.URL != "" {
-			existing.URL = strings.TrimRight(update.URL, "/")
+			existing.URL = netutil.NormalizeAgentBaseURL(update.URL)
 		}
 		if update.APIKey != "" {
 			existing.APIKey = update.APIKey
@@ -642,7 +643,8 @@ func (h *Handler) handleProxy(w http.ResponseWriter, r *http.Request) {
 
 	// Extract the target path after /api/agents/{id}/proxy
 	proxyPath := strings.TrimPrefix(r.URL.Path, fmt.Sprintf("/api/agents/%s/proxy", id))
-	targetURL := agent.URL + proxyPath
+	baseURL := netutil.NormalizeAgentBaseURL(agent.URL)
+	targetURL := baseURL + proxyPath
 	if r.URL.RawQuery != "" {
 		targetURL += "?" + r.URL.RawQuery
 	}
