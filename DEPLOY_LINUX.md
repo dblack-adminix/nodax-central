@@ -59,6 +59,13 @@ chmod +x ./deploy/deploy-linux.sh
 sudo BIN_SOURCE=./nodax-central ./deploy/deploy-linux.sh
 ```
 
+Если на сервере старый Go и не хотите обновлять компилятор, используйте готовый бинарник из репозитория:
+
+```bash
+chmod +x ./release/nodax-central-linux-install/nodax-central
+sudo BIN_SOURCE=./release/nodax-central-linux-install/nodax-central ./deploy/deploy-linux.sh
+```
+
 ## 5. Проверка
 
 ```bash
