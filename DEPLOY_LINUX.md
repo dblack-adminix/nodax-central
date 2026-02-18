@@ -27,8 +27,8 @@
 2) Запустите:
 
 ```bash
-chmod +x ./deploy-linux.sh
-sudo pwsh -File ./install-central.ps1
+chmod +x ./deploy/deploy-linux.sh
+sudo pwsh -File ./deploy/install-central.ps1
 ```
 
 По умолчанию скрипт берёт бинарник `./nodax-central`, ставит сервис `nodax-central`, порт `8080`.
@@ -41,6 +41,22 @@ sudo pwsh -File ./install-central.ps1
 
 ```bash
 sudo APP_NAME=nodax-central PORT=8080 BIN_SOURCE=./nodax-central pwsh -File ./install-central.ps1
+```
+
+## 4.1 Деплой из Git (Debian 13)
+
+Если вы клонируете репозиторий, сначала соберите Linux-бинарник:
+
+```bash
+git clone -b main https://github.com/dblack-adminix/nodax-central.git /opt/nodax-central
+cd /opt/nodax-central
+
+sudo apt update
+sudo apt install -y golang-go curl
+
+CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o nodax-central .
+chmod +x ./deploy/deploy-linux.sh
+sudo BIN_SOURCE=./nodax-central ./deploy/deploy-linux.sh
 ```
 
 ## 5. Проверка
