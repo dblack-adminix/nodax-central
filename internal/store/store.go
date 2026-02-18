@@ -8,6 +8,7 @@ import (
 	"os"
 	"path/filepath"
 	"strconv"
+	"strings"
 	"time"
 
 	"go.etcd.io/bbolt"
@@ -33,12 +34,12 @@ type Store struct {
 
 // New creates a new store instance
 func New() (*Store, error) {
-	ex, err := os.Executable()
+	baseDir, err := resolveDataDir()
 	if err != nil {
-		return nil, fmt.Errorf("failed to get executable path: %w", err)
+		return nil, err
 	}
-	dbPath := filepath.Join(filepath.Dir(ex), "nodax-central.db")
-	sqlitePath := filepath.Join(filepath.Dir(ex), "nodax-central.sqlite")
+	dbPath := filepath.Join(baseDir, "nodax-central.db")
+	sqlitePath := filepath.Join(baseDir, "nodax-central.sqlite")
 
 	db, err := bbolt.Open(dbPath, 0600, &bbolt.Options{Timeout: 2 * time.Second})
 	if err != nil {
@@ -89,6 +90,26 @@ func New() (*Store, error) {
 	}
 
 	return &Store{db: db, sqlDB: sqlDB, readFromSQLite: readFromSQLite}, nil
+}
+
+func resolveDataDir() (string, error) {
+	if v := strings.TrimSpace(os.Getenv("NODAX_DATA_DIR")); v != "" {
+		if err := os.MkdirAll(v, 0o755); err != nil {
+			return "", fmt.Errorf("failed to create data dir %s: %w", v, err)
+		}
+		return v, nil
+	}
+
+	wd, err := os.Getwd()
+	if err == nil && strings.TrimSpace(wd) != "" {
+		return wd, nil
+	}
+
+	ex, err := os.Executable()
+	if err != nil {
+		return "", fmt.Errorf("failed to resolve data dir (wd/exe): %w", err)
+	}
+	return filepath.Dir(ex), nil
 }
 
 func initSQLiteSchema(db *sql.DB) error {

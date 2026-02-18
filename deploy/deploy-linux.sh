@@ -57,6 +57,7 @@ install -m 0755 "$BIN_SOURCE" "$BIN_TARGET"
 if [[ ! -f "$ENV_FILE" ]]; then
   cat > "$ENV_FILE" <<EOF
 NODAX_CENTRAL_PORT=$PORT
+NODAX_DATA_DIR=$DATA_DIR
 EOF
   echo "[OK] Создан env: $ENV_FILE"
 else
@@ -64,6 +65,11 @@ else
     sed -i "s/^NODAX_CENTRAL_PORT=.*/NODAX_CENTRAL_PORT=$PORT/" "$ENV_FILE"
   else
     echo "NODAX_CENTRAL_PORT=$PORT" >> "$ENV_FILE"
+  fi
+  if grep -q '^NODAX_DATA_DIR=' "$ENV_FILE"; then
+    sed -i "s|^NODAX_DATA_DIR=.*|NODAX_DATA_DIR=$DATA_DIR|" "$ENV_FILE"
+  else
+    echo "NODAX_DATA_DIR=$DATA_DIR" >> "$ENV_FILE"
   fi
 fi
 
